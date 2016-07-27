@@ -25,6 +25,10 @@ public:
 	{
 		set(temp);
 	};
+	operator int() const
+	{
+		return x;
+	};
 	int operator=(int &temp)
 	{
 		set(temp);
@@ -57,9 +61,13 @@ void stuff(const int &i)
 		pc.insert(pb);
 		pc.insert(pb);
 		pc.insert(pb);
+		PublicPointer<myInt> tmpPP;
+		tmpPP = pc[2];
+		tmpPP = myInt(i);
 		//pr(host.get());
-		host.set(i);
+		//host.set(i);
 		//pr(host.get());
+		//pr( (myInt)(tmpPP) );
 	}
 };
 
@@ -67,12 +75,14 @@ int main()
 {
 	char hold;
 	std::cout <<"SINGLE" << std::endl;
-	std::cin >> hold;
+	//std::cin >> hold;
 	stuff(-1);
 	std::cout <<"LOOP" << std::endl;
 	std::cin >> hold;
-	for(long i = 0; i < 1000000; i++)
+	for(long i = 0; i < 100000000; i++)
 	{
+		if( i%1000000 == 0)
+			std::cout << i << std::endl;
 		//std::cout<<"LOOP" <<std::endl;
 		stuff(i);
 	};

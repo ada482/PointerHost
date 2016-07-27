@@ -27,11 +27,34 @@ public:
 	{
 		SetModLambda();
 	};
-	ControlPointer(T &in)
+	ControlPointer(const T &in)
 	{
 		data = in;
 		SetModLambda();	
 	};
+	ControlPointer(const ControlPointer<T> &in)
+	{
+		data = in.data;
+		SetModLambda();
+	};
+
+	T& operator=(const T &arg)
+	{
+		data = arg;
+		return data;
+	};
+	ControlPointer<T>& operator=(const ControlPointer<T> &arg)
+	{
+		if(this != &arg)
+			data = arg.data;
+		return *this;
+	};
+	
+	
+	
+	
+	
+	
 	typename std::deque<PublicPointer<T>*>::iterator findRegisteredPtr(PublicPointer<T> &in)
 	{
 		typename std::deque<PublicPointer<T>*>::iterator ret;
@@ -90,11 +113,11 @@ public:
 
 		}
 	};
-	T get()
+	T& get()
 	{
 		return data;
 	};
-	void get(T& out)
+	void get (T& out)
 	{
 		out = data;
 	};
@@ -128,6 +151,30 @@ public:
 		host = NULL;
 		modFun = NULL; 
 		delFun = NULL; 
+	};
+	
+	operator T()
+	{
+		return host->get();
+	};
+	
+	
+	T& operator=(const T &arg)
+	{
+		*host = arg;
+		return host->get();
+	};
+	ControlPointer<T>& operator=(const ControlPointer<T> &arg)
+	{
+		if(host != &arg)
+			host = &arg;
+		return *host;
+	};
+	PublicPointer<T>& operator=(const PublicPointer<T> &arg)
+	{
+		if(this != &arg)
+			setPtr(*(arg.host));
+		return *this;
 	};
 	void unsetPtr()
 	{
@@ -245,15 +292,11 @@ private:
 	std::deque<PublicPointer<T>> data;
 
 public:
-	void init()
-	{
-		
-	};
-	typename std::deque<PublicPointer<T>>::iterator findPtr(long &in)
+	typename std::deque<PublicPointer<T>>::iterator findPtr(const long &in)
 	{
 		if (data.size() < 1 || data.size() <= in || in < 0)
 			return data.end();
-		std::iterator<std::random_access_iterator_tag,PublicPointer<T>> ret;
+		typename std::deque<PublicPointer<T>>::iterator ret;
 		ret = data.begin();
 		return ret+in;			
 	};
@@ -282,20 +325,16 @@ public:
 		}
 	};
 	
-	/*
-	
-	TODO:
-	          value_t& operator[](std::size_t idx)       { return mVector[idx]; };
-const value_t& operator[](std::size_t idx) const { return mVector[idx]; };
 
-	T& operator[](long &in)
+
+
+	PublicPointer<T>& operator[](const long &in)
 	{
 		assert(in>-1);
 		assert(in<data.size());
 		typename std::deque<PublicPointer<T>>::iterator it = findPtr(in);
-		return (*(*it));
+		return (*it);
 	};
-	*/
 	
 	
 	void insert(PublicPointer<T> &in)
